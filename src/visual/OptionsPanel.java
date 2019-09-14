@@ -29,6 +29,7 @@ public class OptionsPanel extends JPanel implements ActionListener{
 		clear.addActionListener(this);
 		clear.setActionCommand(CLEAR);
 		
+		deactivateBtns();
 		add(reduce);
 		add(clear);
 	}
@@ -42,6 +43,17 @@ public class OptionsPanel extends JPanel implements ActionListener{
 		else if(action.equals(CLEAR)) {
 			m.clear();
 		}
+	}
+	
+	public void deactivateBtns() {
+		reduce.setEnabled(false);
+		clear.setEnabled(false);
+		
+	}
+	
+	public void activateBtns() {
+		reduce.setEnabled(true);
+		clear.setEnabled(true);
 	}
 
 }

@@ -61,6 +61,8 @@ public class VisualMain extends JFrame{
 			moorePanel.setVisible(true);
 			break;
 		}
+		options.activateBtns();
+		machineOptions.deactivateBtns();
 		this.validate();
 		pack();
 	}
@@ -71,14 +73,21 @@ public class VisualMain extends JFrame{
 		if(machineOptions.getMachineType().equals("Mealy machine")) {
 			values = mealyPanel.getValues();
 			m.init(values, m.MEALY, inputs);
+			m.reduce();
 		}
 		else {
 			values = moorePanel.getValues();
 			m.init(values, m.MOORE, inputs);
+			m.reduce();
 		}
 	}
 	public void clear() {
-		
+		moorePanel.setVisible(false);
+		mealyPanel.setVisible(false);
+		machineOptions.activateBtns();
+		options.deactivateBtns();
+		validate();
+		pack();
 	}
 
 	public static void main(String[] args) {

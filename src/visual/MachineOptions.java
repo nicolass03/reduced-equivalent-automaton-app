@@ -51,6 +51,18 @@ public class MachineOptions extends JPanel implements ActionListener{
 		return (String) select.getSelectedItem();
 	}
 	
+	public void deactivateBtns() {
+		create.setEnabled(false);
+		select.setEnabled(false);
+		inputs.setEnabled(false);
+	}
+	
+	public void activateBtns() {
+		create.setEnabled(true);
+		select.setEnabled(true);
+		inputs.setEnabled(true);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().endsWith(CREATE)) {

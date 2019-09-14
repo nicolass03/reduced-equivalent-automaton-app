@@ -1,16 +1,22 @@
 package model;
 
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class MooreState {
 
 	private String name;
 	private Hashtable<String, String> adj;
 	private String output;
+	private boolean vis;
 	
 	public MooreState(String n, String out) {
 		name = n;
 		output = out;
+		vis = false;
+		adj = new Hashtable<String, String>();
 	}
 	
 	public void addAdj(String m, String symbol) {
@@ -29,13 +35,6 @@ public class MooreState {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the adj
-	 */
-	public Hashtable<String, String> getAdj() {
-		return adj;
 	}
 
 	/**
@@ -59,5 +58,32 @@ public class MooreState {
 		this.output = output;
 	}
 	
+	
+
+	/**
+	 * @return the vis
+	 */
+	public boolean isVis() {
+		return vis;
+	}
+
+	/**
+	 * @param vis the vis to set
+	 */
+	public void setVis(boolean vis) {
+		this.vis = vis;
+	}
+
+	/**
+	 * @return the adj
+	 */
+	public Set getAdj() {
+		HashSet h = new HashSet();
+		for(Entry e : adj.entrySet()) {
+			h.add(e.getValue());
+		}
+		return h;
+	}
+
 	
 }
