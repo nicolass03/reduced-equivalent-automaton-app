@@ -1,7 +1,9 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Hashtable;
+import java.util.Map.Entry;
 
 public class Main {
 
@@ -11,6 +13,7 @@ public class Main {
 
 	private HashSet states;
 	private String[] inputs;
+	private Object initState;
 	private int type;
 
 	public Main() {
@@ -29,6 +32,8 @@ public class Main {
 				else {
 					String name = table[i][0];
 					MealyState m = new MealyState(name);
+					if(initState == null)
+						initState = m;
 					for (int j = 1; j < table[i].length; j++) {
 						String[] data = table[i][j].split(",");
 						m.addAdj(data[0], inputs[j-1], data[1]);
@@ -46,6 +51,8 @@ public class Main {
 					String name = table[i][0];
 					String out = table[i][table[i].length-1];
 					MooreState m = new MooreState(name, out);
+					if(initState == null)
+						initState = m;
 					for (int j = 1; j < table[i].length-1; j++) {
 						m.addAdj(table[i][j], inputs[j-1]);
 					}
@@ -67,8 +74,54 @@ public class Main {
 			break;
 		}
 	}
+	
+	public void partitioning() {
+		
+	}
+	
+	public ArrayList<ArrayList> firstPartition(){
+		Hashtable<String,ArrayList> auxFirst = new Hashtable<String,ArrayList>();
+		HashSet aux = (HashSet) states.clone();
+		switch(type) {
+		case MEALY:
+			for (Object o : aux) {
+				MealyState m = (MealyState) o;
+				if(auxFirst.isEmpty() || !(auxFirst.keySet().contains(m.getOutputs()))) {
+					ArrayList block = new ArrayList();
+					block.add(m);
+					auxFirst.put(m.getOutputs(), block);
+					aux.remove(m);
+				}
+				else {
+					auxFirst.get(m.getOutputs()).add(m);
+					aux.remove(m);
+				}
+			}
+			break;
+		case MOORE:
+			for (Object o : aux) {
+				MooreState m = (MooreState) o;
+				if(auxFirst.isEmpty() || !(auxFirst.keySet().contains(m.getOutput()))) {
+					ArrayList block = new ArrayList();
+					block.add(m);
+					auxFirst.put(m.getOutput(), block);
+					aux.remove(m);
+				}
+				else {
+					auxFirst.get(m.getOutput()).add(m);
+					aux.remove(m);
+				}
+			}
+			break;
+		}
+		ArrayList<ArrayList> first = new ArrayList<ArrayList>();
+		for(Entry<String, ArrayList> e : auxFirst.entrySet())
+			first.add(e.getValue());
+		return first;
+	}
+	
 	public void deleteUnreachableMealy() {
-		dfsMealy((MealyState) states.iterator().next());
+		dfsMealy((MealyState) initState);
 		for(Object o : states) {
 			MealyState n = (MealyState) o;
 			if(!n.isVis()) {
@@ -78,7 +131,7 @@ public class Main {
 	}
 	
 	public void deleteUnreachableMoore() {
-		dfsMoore((MooreState) states.iterator().next());
+		dfsMoore((MooreState) initState);
 		for(Object o : states) {
 			MooreState n = (MooreState) o;
 			if(!n.isVis()) {

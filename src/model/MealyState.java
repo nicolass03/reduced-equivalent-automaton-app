@@ -58,4 +58,13 @@ public class MealyState {
 		}
 		return h;
 	}
+	
+	public String getOutputs() {
+		String out = "";
+		for(Entry e : adj.entrySet()) {
+			Tuple t = (Tuple) e.getValue();
+			out+=t.y;
+		}
+		return out;
+	}
 }
