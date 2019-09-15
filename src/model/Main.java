@@ -68,17 +68,85 @@ public class Main {
 		switch(type) {
 		case MEALY:
 			deleteUnreachableMealy();
+			partitioning(firstPartition());
 			break;
 		case MOORE:
 			deleteUnreachableMoore();
+			partitioning(firstPartition());
 			break;
 		}
 	}
 	
-	public void partitioning() {
-		
+	public ArrayList<ArrayList> partitioning(ArrayList<ArrayList> arr) {
+		//nueva particion
+		ArrayList<ArrayList> newPartition = new ArrayList<>();
+		//aqui agrego los que elimino para luego ver si forman nuevas particiones
+		ArrayList garbage = new ArrayList();
+		switch(type) {
+		case MEALY:	
+			//recorro cada bloque de la particion
+			for(int k = 0; k < arr.size(); k++) {
+				ArrayList currentBlock = arr.get(k);
+				//saco mi primer estado y lo agrego a la primera particion
+				MealyState current = (MealyState) currentBlock.get(0);
+				newPartition.get(k).add(current);
+				//recorro todos los estados de mi bloque
+					for(int i = 1; i < currentBlock.size()-1; i++) {
+						MealyState next = (MealyState)currentBlock.get(i);
+						//hago el algoritmo para ver si pertenecen al mismo bloque
+						boolean sameBlock = together(current, next, arr);
+						//si pertenece
+						if(sameBlock) {
+							//lo agrego a mi particion
+							newPartition.get(k).add(next);
+							//hago current como el siguiente
+							current = next;
+						}
+						//si no, lo agrego a mi coleccion de eliminados para su posterior evaluacion
+						else {
+							garbage.add(next);
+						}
+				}
+			}
+			//hasta este punto, tengo en newPartition los estados que pertenecen, ahora voy a evaluar la coleccion garbage
+			for (int i = 0; i < garbage.size()-1; i++) {
+				ArrayList newBlock = new ArrayList();
+				MealyState ms = (MealyState) garbage.get(i);
+				newBlock.add(ms);
+				MealyState next = (MealyState) garbage.get(i+1);
+
+				if(together(ms, next, arr)) {
+					newBlock.add(next);
+				}
+				else {
+					
+				}
+			}
+				
+			break;
+			
+		case MOORE:
+			break;
+		}
+		if(newPartition == arr)
+			return newPartition;
+		else
+			return partitioning(newPartition);
 	}
 	
+	/**
+	 * Este metodo evalua si pertenecen a la misma particion
+	 * @param current - estado 1
+	 * @param object - estado 2
+	 * @param arr - particion actual
+	 * @return - true or false 
+	 */
+	private boolean together(MealyState current, MealyState object, ArrayList<ArrayList> arr) {
+		boolean same = false;
+		// TODO Auto-generated method stub
+		return same;
+	}
+
 	public ArrayList<ArrayList> firstPartition(){
 		Hashtable<String,ArrayList> auxFirst = new Hashtable<String,ArrayList>();
 		HashSet aux = (HashSet) states.clone();
